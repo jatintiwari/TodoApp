@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>My Task</title>
+<link rel="stylesheet" href="resources/css/bootstrap.css"></link>
+</head>
+<body>
+
+	<div class="container">
+		<br>
+		<h2 style="display: inline">My Tasks</h2>
+		<a href='#add' class="btn">New task</a>
+		<div class="count" ></div>
+		<hr />
+		<div class="container"
+			style="width: 570px; display: inline-block; float: left">
+			<div class="tasks"></div>
+		</div>
+		<div class="container" style="width: 570px; float: right">
+			<div class="addFormDisplay"></div>
+		</div>
+	</div>
+
+
+	<script id="templateView" type="text/template">
+			 <a class="edit btn" href="#edit/<%=id%>" ><span> <%=taskTitle%> </span>: <%=completed? '<span style="color:green">Complete</span>':'<span style="color:red">Incomplete</span>'%></span></a>			
+			<button class="delete">Delete</button>
+			<br>
+		</script>
+		<script type="text/template" id="countTemplateView">
+				<span style="color:Green;font-size:15px"><label>Complete:&nbsp<%=complete%> </label></span>&nbsp &nbsp
+				<span style="color:Red;font-size:15px"> <label>Incomplete:&nbsp<%=incomplete%> </label></span>
+		</script>
+		
+	<script type="text/template" id="addFormTemplate">
+			<form id="addTask" action="">
+		<div class="form-group">
+			<label for="title">Title</label> <input type="text"
+				class="form-control" id="taskTitle" placeholder="Task Title" value="<%= task.id ? task.taskTitle : '' %>">
+		</div>
+		<label> <input type="checkbox" name="completed" id="completed" <%=task.completed ? completed='checked' : completed=''%>> Completed</label>
+		<button type="submit" class="btn btn-default"><%=task.id? 'Update':'Create'%></button>
+	</form>
+		</script>
+
+	<script src="resources/js/lib/jquery.js"></script>
+	<script src="resources/js/lib/underscore.js"></script>
+	<script src="resources/js/lib/backbone.js"></script>
+	<script src="main3.js"></script>
+
+
+</body>
+</html>
