@@ -8,19 +8,19 @@
 	window.template=function(id){
 		return _.template($('#'+id).html());
 	};
-	
+
 
 	//define a model: 1. set defaults 2. validations
 	App.Model.Task=Backbone.Model.extend({
 		urlRoot:'todo',
 		defaults:{
-	        id: null,
+			id: null,
 			taskTitle:'',
 			completed:false
 		},
 		idAttribute: "id",
 		iniialize:function(){
-			
+
 		},
 		validate:function(attr){
 
@@ -106,7 +106,7 @@
 			},100);
 		}
 	});
-	
+
 	App.Model.CountModel=Backbone.Model.extend({
 		defaults:{
 			total:'',
@@ -114,7 +114,7 @@
 			incomplete:''
 		}
 	});
-	
+
 	App.View.CountView= Backbone.View.extend({
 		el:'.count',
 		template:template('countTemplateView'),
@@ -130,19 +130,19 @@
 			this.$el.html(this.template(countModel.attributes));
 		},
 	});
-	
-	
-	window.tasks= new App.Collection.Tasks();
+
+
+	var tasks= new App.Collection.Tasks();
 	var tasksView= new App.View.TasksView({collection:tasks});
-	
-	
+
+
 	App.Router.Tasks=Backbone.Router.extend({
 		routes:{
 			'':'list',
 			'add':'add',
 			'edit/:id':'edit'
 		},
-		
+
 		list:function(){
 			$('.addFormDisplay').empty();
 			tasks.fetch({
@@ -153,22 +153,26 @@
 					},50);
 				}
 			});
-			
+
 		},
 		add:function(){
 			console.log('this is a add function');
 			$('.addFormDisplay').html(_.template($('#addFormTemplate').html(),{task:new App.Model.Task}));
 			if(tasks.isEmpty){
 				tasks.fetch();
+				console.log('fetched')
 			}
 			$('.tasks').html(tasksView.render().el);
 			var addNewTaskView= new App.View.AddOne({model:new App.Model.Task});	
 		},
 		edit:function(id){
 			console.log('this is a edit function for model id ' +id);
+			if(tasks.isEmpty){
+				tasks.fetch();
+				console.log('fetched')
+			}
 			$('.tasks').html(tasksView.render().el);
 			this.getTask=tasks.get(id);
-			console.log(this.getTask.toJSON());
 			$('.addFormDisplay').html(_.template($('#addFormTemplate').html(),{task:this.getTask.toJSON()}));
 			var addNewTaskView= new App.View.AddOne({model:this.getTask});
 		}

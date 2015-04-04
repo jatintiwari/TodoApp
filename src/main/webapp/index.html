@@ -9,8 +9,8 @@
 
 	<div class="container">
 		<br>
-		<h2 style="display: inline">My Tasks</h2>
-		<a href='#add' class="btn">New task</a>
+		<h2 style="display: inline"><a href="#" class="btn-group-lg" style="text-decoration: none">My Tasks</a></h2>
+		<a href='#add' class="btn">New task <span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
 		<div class="count" ></div>
 		<hr />
 		<div class="container"
@@ -34,7 +34,7 @@
 		</script>
 		
 	<script type="text/template" id="addFormTemplate">
-			<form id="addTask" action="">
+			<form id="addTask" action="#">
 		<div class="form-group">
 			<label for="title">Title</label> <input type="text"
 				class="form-control" id="taskTitle" placeholder="Task Title" value="<%= task.id ? task.taskTitle : '' %>">
@@ -47,12 +47,7 @@
 	<script src="resources/js/lib/jquery.js"></script>
 	<script src="resources/js/lib/underscore.js"></script>
 	<script src="resources/js/lib/backbone.js"></script>
-	<script src="resources/js/models/todo.js"></script>
-	<script src="resources/js/collections/todos.js"></script>
-	<script src="resources/js/views/todos.js"></script>
-	<script src="resources/js/router/router.js"></script>
-	<script src="resources/js/views/app.js"></script>
-<!-- 	<script src="main3.js"></script> -->
+	<script src="main3.js"></script>
 
 
 </body>
