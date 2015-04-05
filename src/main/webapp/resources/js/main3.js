@@ -23,31 +23,18 @@
 
 		},
 		validate:function(attr){
-
+			if(!$.trim(attr.taskTitle)){
+				return "Task title required";
+			}
 		},
 	});
 	//define a view for the model
 	//define the edit and delete methods
 	App.View.TaskView= Backbone.View.extend({
-		tagName:'li',
+		tagName:'tr',
 		template:template('templateView'),
 		initialize:function(){
-			this.model.on('destroy',this.remove,this);
 			this.model.on('change',this.render,this);
-		},
-		events:{
-			'click .edit':'editEvent',
-			'click .delete':'destroy'
-		},
-		destroy:function(){
-			console.log("destroy");
-			this.model.destroy();
-		},
-		remove:function(){
-			this.$el.remove();
-		},
-		editEvent:function(){
-			app.navigate('edit',false);
 		},
 		render:function(){
 			this.$el.html(this.template(this.model.toJSON()));
@@ -65,7 +52,7 @@
 	});
 
 	App.View.TasksView= Backbone.View.extend({
-		tagName:'ul',
+		tagName:'td',
 		initialize:function(){
 			this.collection.on('add',this.addOne,this);
 		},
@@ -86,11 +73,16 @@
 		el:'#addTask',
 		initialize:function(){
 			this.model.on('destroy',this.remove,this);
+			this.model.on('invalid',function(model,error){
+				this.invalid(model,error);
+			},this);
 		},
 		events:{
 			'submit':'submit',
-			'click .delete':'destroy'
-				
+			'click .delete':'destroy',
+		},
+		invalid:function(model,error){
+			$('.error').html(error);
 		},
 		destroy:function(){
 			this.model.destroy();
@@ -106,17 +98,19 @@
 			var addNewTitle= $('#taskTitle').val();
 			var completed= $('input[name="completed"]:checked').length>0;
 			console.log("completed: "+completed);
-			this.model.set('taskTitle',addNewTitle);
 			if(completed){
 				this.model.set('completed',true);
 			}else{
 				this.model.set('completed',false);
 			}
-			this.model.save();
-			setTimeout(function(){
-				app.navigate('',true);
-				console.log('added');
-			},100);
+			this.model.save({taskTitle:addNewTitle}, {
+			    success: function (model, response) {
+			    	setTimeout(function(){
+						app.navigate('',true);
+						console.log('added');
+					},100);
+			    },
+			});
 		}
 	});
 
@@ -153,6 +147,7 @@
 		},
 		complete:function(){
 			console.log("Complete");
+			$('#listLabel').html("<h4>Tasks: Completed</h4>")
 			$('.addFormDisplay').html('');
 			this.completeCollection= new App.Collection.Tasks();
 			_.each(self.completeModels,function(task){
@@ -163,6 +158,7 @@
 		},
 		incomplete:function(){
 			console.log("Incomplete");
+			$('#listLabel').html("<h4>Tasks: Incomplete</h4>")
 			$('.addFormDisplay').html('');
 			this.inCompleteCollection= new App.Collection.Tasks();
 			this.incomplete=this.collection.where({completed:false});
@@ -177,8 +173,7 @@
 	App.Router.Tasks=Backbone.Router.extend({
 		routes:{
 			'':'list',
-			'add':'add',
-			'edit/:id':'edit',
+			'add/:id':'add',
 		},
 		initialize:function(){
 			this.tasks= new App.Collection.Tasks();
@@ -188,6 +183,7 @@
 		list:function(){
 			var _this=this;
 			$('.addFormDisplay').empty();
+			$('#listLabel').html("<h4>Tasks: All</h4>")
 			this.tasks.fetch({
 				success:function(){
 					var self=_this;
@@ -199,18 +195,23 @@
 			});
 
 		},
-		add:function(){
+		add:function(id){
 			console.log('this is a add function');
-			$('.addFormDisplay').html(_.template($('#addFormTemplate').html(),{task:new App.Model.Task}));
+			if(id!=='new'){
+				console.log(id);
+				var getTask=this.tasks.get(id);
+				if(!getTask){
+					$('.addFormDisplay').html('<div class="alert alert-danger" role="alert">No Task</div>');
+					return;
+				}
+				$('.addFormDisplay').html(_.template($('#addFormTemplate').html(),{task:getTask.toJSON()}));
+				this.addNewTaskView= new App.View.AddOne({model:getTask});
+			}else{
+				$('.addFormDisplay').html(_.template($('#addFormTemplate').html(),{task:new App.Model.Task}));
+				this.addNewTaskView= new App.View.AddOne({model:new App.Model.Task});	
+			}
 			this.tasks.fetch();
 			$('.tasks').html(this.tasksView.render().el);
-			var addNewTaskView= new App.View.AddOne({model:new App.Model.Task});	
-		},
-		edit:function(id){
-			console.log('this is a edit function for model id ' +id);
-			var getTask=this.tasks.get(id);
-			$('.addFormDisplay').html(_.template($('#addFormTemplate').html(),{task:getTask.toJSON()}));
-			var addNewTaskView= new App.View.AddOne({model:getTask});
 		},
 	});
 
