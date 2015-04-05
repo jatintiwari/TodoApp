@@ -25,7 +25,6 @@
 
 	<script id="templateView" type="text/template">
 			 <a class="edit btn" href="#edit/<%=id%>" ><span> <%=taskTitle%> </span>: <%=completed? '<span style="color:green">Complete</span>':'<span style="color:red">Incomplete</span>'%></span></a>			
-			<button class="delete">Delete</button>
 			<br>
 		</script>
 		<script type="text/template" id="countTemplateView">
@@ -41,13 +40,14 @@
 		</div>
 		<label> <input type="checkbox" name="completed" id="completed" <%=task.completed ? completed='checked' : completed=''%>> Completed</label>
 		<button type="submit" class="btn btn-default"><%=task.id? 'Update':'Create'%></button>
+		<a href="#delete/<%=task.id%>" class="btn btn-warning btn-sm" style="<%=task.id ? '': 'display:none'%>">Delete</a>
 	</form>
 		</script>
 
 	<script src="resources/js/lib/jquery.js"></script>
 	<script src="resources/js/lib/underscore.js"></script>
 	<script src="resources/js/lib/backbone.js"></script>
-	<script src="main3.js"></script>
+	<script src="resources/js/main3.js"></script>
 
 
 </body>

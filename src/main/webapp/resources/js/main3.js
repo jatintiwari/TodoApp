@@ -39,10 +39,6 @@
 			'click .edit':'editEvent',
 			'click .delete':'destroy'
 		},
-		destroy:function(){
-			console.log("destroy");
-			this.model.destroy();
-		},
 		remove:function(){
 			this.$el.remove();
 		},
@@ -140,7 +136,8 @@
 		routes:{
 			'':'list',
 			'add':'add',
-			'edit/:id':'edit'
+			'edit/:id':'edit',
+			'delete/:id':'destroy'
 		},
 
 		list:function(){
@@ -175,6 +172,15 @@
 			this.getTask=tasks.get(id);
 			$('.addFormDisplay').html(_.template($('#addFormTemplate').html(),{task:this.getTask.toJSON()}));
 			var addNewTaskView= new App.View.AddOne({model:this.getTask});
+		},
+		destroy:function(id){
+			var task=tasks.get(id);
+			var taskView= new App.View.TaskView({model:task});
+			task.destroy({
+				success:function(){
+					app.navigate('',true);
+				}
+			});
 		}
 	});
 
