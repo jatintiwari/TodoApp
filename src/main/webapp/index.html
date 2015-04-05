@@ -40,10 +40,10 @@
 		</div>
 		<label> <input type="checkbox" name="completed" id="completed" <%=task.completed ? completed='checked' : completed=''%>> Completed</label>
 		<button type="submit" class="btn btn-default"><%=task.id? 'Update':'Create'%></button>
-		<a href="#delete/<%=task.id%>" class="btn btn-warning btn-sm" style="<%=task.id ? '': 'display:none'%>">Delete</a>
+		<a  class="btn btn-warning btn-sm delete" style="<%=task.id ? '': 'display:none'%>">Delete</a>
 	</form>
 		</script>
-
+<!-- href="#delete/<%=task.id%>" -->
 	<script src="resources/js/lib/jquery.js"></script>
 	<script src="resources/js/lib/underscore.js"></script>
 	<script src="resources/js/lib/backbone.js"></script>

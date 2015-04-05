@@ -39,6 +39,10 @@
 			'click .edit':'editEvent',
 			'click .delete':'destroy'
 		},
+		destroy:function(){
+			console.log("destroy");
+			this.model.destroy();
+		},
 		remove:function(){
 			this.$el.remove();
 		},
@@ -78,9 +82,19 @@
 	//define the add event for the collections and render the event in template
 	App.View.AddOne= Backbone.View.extend({
 		el:'#addTask',
-
+		initialize:function(){
+			this.model.on('destroy',this.remove,this);
+		},
 		events:{
-			'submit':'submit'
+			'submit':'submit',
+			'click .delete':'destroy'
+				
+		},
+		destroy:function(){
+			this.model.destroy();
+		},
+		remove:function(){
+			this.$el.remove();
 		},
 		submit:function(e){
 			e.preventDefault();
@@ -127,26 +141,26 @@
 		},
 	});
 
-
-	var tasks= new App.Collection.Tasks();
-	var tasksView= new App.View.TasksView({collection:tasks});
-
-
 	App.Router.Tasks=Backbone.Router.extend({
 		routes:{
 			'':'list',
 			'add':'add',
 			'edit/:id':'edit',
-			'delete/:id':'destroy'
+		},
+		initialize:function(){
+			this.tasks= new App.Collection.Tasks();
+			this.tasksView= new App.View.TasksView({collection:this.tasks});
 		},
 
 		list:function(){
+			var _this=this;
 			$('.addFormDisplay').empty();
-			tasks.fetch({
+			this.tasks.fetch({
 				success:function(){
-					$('.tasks').html(tasksView.render().el);
+					var self=_this;
+					$('.tasks').html(_this.tasksView.render().el);
 					setTimeout(function(){
-						var countView= new App.View.CountView({collection:tasks});
+						var countView= new App.View.CountView({collection:self.tasks});
 					},50);
 				}
 			});
@@ -155,35 +169,26 @@
 		add:function(){
 			console.log('this is a add function');
 			$('.addFormDisplay').html(_.template($('#addFormTemplate').html(),{task:new App.Model.Task}));
-			if(tasks.isEmpty){
-				tasks.fetch();
+			if(this.tasks.isEmpty){
+				this.tasks.fetch();
 				console.log('fetched')
 			}
-			$('.tasks').html(tasksView.render().el);
+			$('.tasks').html(this.tasksView.render().el);
 			var addNewTaskView= new App.View.AddOne({model:new App.Model.Task});	
 		},
 		edit:function(id){
 			console.log('this is a edit function for model id ' +id);
-			if(tasks.isEmpty){
-				tasks.fetch();
+			if(this.tasks.isEmpty){
+				this.tasks.fetch();
 				console.log('fetched')
 			}
-			$('.tasks').html(tasksView.render().el);
-			this.getTask=tasks.get(id);
-			$('.addFormDisplay').html(_.template($('#addFormTemplate').html(),{task:this.getTask.toJSON()}));
-			var addNewTaskView= new App.View.AddOne({model:this.getTask});
+			$('.tasks').html(this.tasksView.render().el);
+			var getTask=this.tasks.get(id);
+			$('.addFormDisplay').html(_.template($('#addFormTemplate').html(),{task:getTask.toJSON()}));
+			var addNewTaskView= new App.View.AddOne({model:getTask});
 		},
-		destroy:function(id){
-			var task=tasks.get(id);
-			var taskView= new App.View.TaskView({model:task});
-			task.destroy({
-				success:function(){
-					app.navigate('',true);
-				}
-			});
-		}
 	});
 
-	var app= new App.Router.Tasks({pushState:true});
+	var app= new App.Router.Tasks();
 	Backbone.history.start();
 })();
