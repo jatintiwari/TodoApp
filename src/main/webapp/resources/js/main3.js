@@ -79,6 +79,8 @@
 			this.$el.append(taskView.render().el);
 		}
 	});
+	
+	
 	//define the add event for the collections and render the event in template
 	App.View.AddOne= Backbone.View.extend({
 		el:'#addTask',
@@ -99,17 +101,15 @@
 		submit:function(e){
 			e.preventDefault();
 			var addNewTitle= $('#taskTitle').val();
-			var id= this.model.get('id');
 			var completed= $('input[name="completed"]:checked').length>0;
-			console.log(completed);
-			var addNewModel= new App.Model.Task({
-				id:id,
-				taskTitle:addNewTitle,
-			});
+			console.log("completed: "+completed);
+			this.model.set('taskTitle',addNewTitle);
 			if(completed){
-				addNewModel.set('completed',true)
+				this.model.set('completed',true);
+			}else{
+				this.model.set('completed',false);
 			}
-			addNewModel.save();
+			this.model.save();
 			setTimeout(function(){
 				app.navigate('',true);
 				console.log('added');
@@ -127,17 +127,45 @@
 
 	App.View.CountView= Backbone.View.extend({
 		el:'.count',
+		events:{
+			'click .complete':'complete',
+				'click .incomplete':'incomplete'
+		},
 		template:template('countTemplateView'),
+		self:this,
 		initialize:function(){
 			var total=this.collection.length;
-			var complete=this.collection.where({completed:true}).length;
-			var incomplete=total-complete;
-			var countModel= new App.Model.CountModel({
-				complete:complete,
-				incomplete:incomplete
+			self.completeModels=this.collection.where({completed:true});
+			var completeCount=completeModels.length;
+			var incompleteCount=total-completeCount;
+			self.countModel= new App.Model.CountModel({
+				complete:completeCount,
+				incomplete:incompleteCount
 			});
-			console.log(countModel.toJSON());
+			//this.complete(completeModels);
+			this.render(self.countModel);
+		},
+		render:function(countModel){
 			this.$el.html(this.template(countModel.attributes));
+		},
+		complete:function(){
+			console.log("Complete");
+			this.completeCollection= new App.Collection.Tasks();
+			_.each(self.completeModels,function(task){
+				this.completeCollection.add(task);
+			},this);
+		this.tasksView= new App.View.TasksView({collection:this.completeCollection});
+		$('.tasks').html(this.tasksView.render().el);
+		},
+		incomplete:function(){
+			console.log("Incomplete");
+			this.inCompleteCollection= new App.Collection.Tasks();
+			this.incomplete=this.collection.where({completed:false});
+			_.each(this.incomplete,function(task){
+				this.inCompleteCollection.add(task);
+			},this);
+		this.tasksView= new App.View.TasksView({collection:this.inCompleteCollection});
+		$('.tasks').html(this.tasksView.render().el);
 		},
 	});
 
@@ -169,20 +197,20 @@
 		add:function(){
 			console.log('this is a add function');
 			$('.addFormDisplay').html(_.template($('#addFormTemplate').html(),{task:new App.Model.Task}));
-			if(this.tasks.isEmpty){
-				this.tasks.fetch();
-				console.log('fetched')
-			}
+//			if(this.tasks.isEmpty){
+//				this.tasks.fetch();
+//				console.log('fetched')
+//			}
 			$('.tasks').html(this.tasksView.render().el);
 			var addNewTaskView= new App.View.AddOne({model:new App.Model.Task});	
 		},
 		edit:function(id){
 			console.log('this is a edit function for model id ' +id);
-			if(this.tasks.isEmpty){
-				this.tasks.fetch();
-				console.log('fetched')
-			}
-			$('.tasks').html(this.tasksView.render().el);
+//			if(this.tasks.isEmpty){
+//				this.tasks.fetch();
+//				console.log('fetched')
+//			}
+//			$('.tasks').html(this.tasksView.render().el);
 			var getTask=this.tasks.get(id);
 			$('.addFormDisplay').html(_.template($('#addFormTemplate').html(),{task:getTask.toJSON()}));
 			var addNewTaskView= new App.View.AddOne({model:getTask});

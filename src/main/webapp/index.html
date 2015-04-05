@@ -9,41 +9,45 @@
 
 	<div class="container">
 		<br>
-		<h2 style="display: inline"><a href="#" class="btn-group-lg" style="text-decoration: none">My Tasks</a></h2>
-		<a href='#add' class="btn">New task <span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
-		<div class="count" ></div>
+		<div style="display: inline;">
+		<h2 style="display: inline"><a href="" class="btn-group-lg" style="text-decoration: none">My Tasks</a></h2> &nbsp &nbsp
+		<a href='#add' class="btn btn-success"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Add task</a>
+		</div>
+		<div class="count" style="display: inline;margin-left: 100px;"></div>
 		<hr />
 		<div class="container"
-			style="width: 570px; display: inline-block; float: left">
+			style="width: 270px; display: inline-block; float: left">
 			<div class="tasks"></div>
 		</div>
-		<div class="container" style="width: 570px; float: right">
+		<div class="container" style="width:800px; float: right">
 			<div class="addFormDisplay"></div>
 		</div>
 	</div>
 
 
 	<script id="templateView" type="text/template">
-			 <a class="edit btn" href="#edit/<%=id%>" ><span> <%=taskTitle%> </span>: <%=completed? '<span style="color:green">Complete</span>':'<span style="color:red">Incomplete</span>'%></span></a>			
+			 <a class="edit btn btn-lg" href="#edit/<%=id%>" ><span><%=taskTitle%> </span>: <%=completed? '<span style="color:green">Complete</span>':'<span style="color:red">Incomplete</span>'%></span></a>			
 			<br>
 		</script>
 		<script type="text/template" id="countTemplateView">
-				<span style="color:Green;font-size:15px"><label>Complete:&nbsp<%=complete%> </label></span>&nbsp &nbsp
-				<span style="color:Red;font-size:15px"> <label>Incomplete:&nbsp<%=incomplete%> </label></span>
+				<span><label><a class="complete" style="color:Green;font-size:15px; text-decoration:none">Complete&nbsp:&nbsp<span class="badge"><%=complete%></span></a></label></span>&nbsp &nbsp
+				<span><label><a class="incomplete" style="color:Red;font-size:15px; text-decoration:none" >Incomplete&nbsp:&nbsp<span class="badge"><%=incomplete%></span></a></label></span>
 		</script>
 		
 	<script type="text/template" id="addFormTemplate">
-			<form id="addTask" action="#">
+	<form id="addTask" action="#" class="col-sm-7">
 		<div class="form-group">
 			<label for="title">Title</label> <input type="text"
 				class="form-control" id="taskTitle" placeholder="Task Title" value="<%= task.id ? task.taskTitle : '' %>">
 		</div>
-		<label> <input type="checkbox" name="completed" id="completed" <%=task.completed ? completed='checked' : completed=''%>> Completed</label>
-		<button type="submit" class="btn btn-default"><%=task.id? 'Update':'Create'%></button>
-		<a  class="btn btn-warning btn-sm delete" style="<%=task.id ? '': 'display:none'%>">Delete</a>
+		<div class="form-group">
+			<label> <input type="checkbox" name="completed" id="completed" <%=task.completed ? completed='checked' : completed=''%>> Completed</label><br/>
+			<button type="submit" class="btn btn-default"><%=task.id? 'Update':'Create'%></button>
+			<a  class="btn btn-danger delete" style="<%=task.id ? '': 'display:none'%>">Delete</a>
+		</div>
 	</form>
-		</script>
-<!-- href="#delete/<%=task.id%>" -->
+	</script>
+		
 	<script src="resources/js/lib/jquery.js"></script>
 	<script src="resources/js/lib/underscore.js"></script>
 	<script src="resources/js/lib/backbone.js"></script>
