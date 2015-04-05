@@ -153,6 +153,7 @@
 		},
 		complete:function(){
 			console.log("Complete");
+			$('#listLabel').html("<h4>Tasks: Completed</h4>")
 			$('.addFormDisplay').html('');
 			this.completeCollection= new App.Collection.Tasks();
 			_.each(self.completeModels,function(task){
@@ -163,6 +164,7 @@
 		},
 		incomplete:function(){
 			console.log("Incomplete");
+			$('#listLabel').html("<h4>Tasks: Incomplete</h4>")
 			$('.addFormDisplay').html('');
 			this.inCompleteCollection= new App.Collection.Tasks();
 			this.incomplete=this.collection.where({completed:false});
@@ -188,6 +190,7 @@
 		list:function(){
 			var _this=this;
 			$('.addFormDisplay').empty();
+			$('#listLabel').html("<h4>Tasks: All</h4>")
 			this.tasks.fetch({
 				success:function(){
 					var self=_this;
