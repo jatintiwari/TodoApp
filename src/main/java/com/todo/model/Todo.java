@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 @Entity
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class Todo {
 
 	@Id

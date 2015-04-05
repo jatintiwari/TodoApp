@@ -197,20 +197,12 @@
 		add:function(){
 			console.log('this is a add function');
 			$('.addFormDisplay').html(_.template($('#addFormTemplate').html(),{task:new App.Model.Task}));
-//			if(this.tasks.isEmpty){
-//				this.tasks.fetch();
-//				console.log('fetched')
-//			}
+			this.tasks.fetch();
 			$('.tasks').html(this.tasksView.render().el);
 			var addNewTaskView= new App.View.AddOne({model:new App.Model.Task});	
 		},
 		edit:function(id){
 			console.log('this is a edit function for model id ' +id);
-//			if(this.tasks.isEmpty){
-//				this.tasks.fetch();
-//				console.log('fetched')
-//			}
-//			$('.tasks').html(this.tasksView.render().el);
 			var getTask=this.tasks.get(id);
 			$('.addFormDisplay').html(_.template($('#addFormTemplate').html(),{task:getTask.toJSON()}));
 			var addNewTaskView= new App.View.AddOne({model:getTask});
