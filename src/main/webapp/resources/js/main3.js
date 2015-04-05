@@ -97,6 +97,9 @@
 		},
 		remove:function(){
 			this.$el.remove();
+			setTimeout(function(){
+				app.navigate('',true);
+			},30);
 		},
 		submit:function(e){
 			e.preventDefault();
@@ -150,6 +153,7 @@
 		},
 		complete:function(){
 			console.log("Complete");
+			$('.addFormDisplay').html('');
 			this.completeCollection= new App.Collection.Tasks();
 			_.each(self.completeModels,function(task){
 				this.completeCollection.add(task);
@@ -159,6 +163,7 @@
 		},
 		incomplete:function(){
 			console.log("Incomplete");
+			$('.addFormDisplay').html('');
 			this.inCompleteCollection= new App.Collection.Tasks();
 			this.incomplete=this.collection.where({completed:false});
 			_.each(this.incomplete,function(task){
