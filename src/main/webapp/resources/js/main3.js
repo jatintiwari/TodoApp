@@ -97,12 +97,7 @@
 			e.preventDefault();
 			var addNewTitle= $('#taskTitle').val();
 			var completed= $('input[name="completed"]:checked').length>0;
-			console.log("completed: "+completed);
-			if(completed){
-				this.model.set('completed',true);
-			}else{
-				this.model.set('completed',false);
-			}
+			this.model.set('completed',completed);
 			this.model.save({taskTitle:addNewTitle}, {
 			    success: function (model, response) {
 			    	setTimeout(function(){
