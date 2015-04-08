@@ -3,6 +3,22 @@ var app= app || {};
 	app.TaskView= Backbone.View.extend({
 		tagName:'tr',
 		template:_.template($('#templateView').html()),
+		events:{
+			'dblclick .edit':'edit',
+			'click .edit':'display'
+		},
+		edit:function(){
+			console.log('edit');
+			router.navigate('list/'+this.model.id+'/edit',true);
+		},
+		display:function(){
+			console.log('display');
+			router.navigate('list/'+this.model.id,true);
+		},
+		initialize:function(){
+			window.tasks= new app.Tasks();
+			this.tasksView = new app.TasksView({collection:tasks});
+		},
 		initialize:function(){
 			this.model.on('change',this.render,this);
 		},
@@ -69,6 +85,8 @@ var app= app || {};
 			});
 		}
 	});
+	
+	
 	app.CountView= Backbone.View.extend({
 		el:'.count',
 		events:{
@@ -82,12 +100,11 @@ var app= app || {};
 			self.completeModels=this.collection.where({completed:true});
 			var completeCount=completeModels.length;
 			var incompleteCount=total-completeCount;
-			self.countModel= new app.CountModel({
+			this.countModel= new app.CountModel({
 				complete:completeCount,
 				incomplete:incompleteCount
 			});
-			//this.complete(completeModels);
-			this.render(self.countModel);
+			this.render(this.countModel);
 		},
 		render:function(countModel){
 			this.$el.html(this.template(countModel.attributes));
@@ -106,7 +123,7 @@ var app= app || {};
 		incomplete:function(){
 			console.log("Incomplete");
 			$('#listLabel').html("<h4>Tasks: Incomplete</h4>")
-			$('.addFormDisplay').html('');
+			$('.addFormDisplay').empty();
 			this.inCompleteCollection= new app.Tasks();
 			this.incomplete=this.collection.where({completed:false});
 			_.each(this.incomplete,function(task){

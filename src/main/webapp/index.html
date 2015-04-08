@@ -14,7 +14,7 @@
 				<a href="" class="btn-group-lg" style="text-decoration: none">My
 					Tasks</a>
 			</h2>
-			&nbsp &nbsp <a href='#add/new' class="btn btn-success"><span
+			&nbsp &nbsp <a href='#add' class="btn btn-success"><span
 				class="glyphicon glyphicon-plus" aria-hidden="true"></span>Add task</a>
 		</div>
 		<section class="count" style="display: inline; margin-left: 100px;"></section>
@@ -35,7 +35,7 @@
 			<thead>
 			</thead>
 			<tbody>
-			 <a class="edit btn" href="#add/<%=id%>" ><span><%=taskTitle%> </span>: <%=completed? '<span style="color:green">Complete</span>':'<span style="color:red">Incomplete</span>'%></span></a>
+			 <a class="edit btn"><span><%=taskTitle%> </span>: <%=completed? '<span style="color:green">Complete</span>':'<span style="color:red">Incomplete</span>'%></span></a>
 			</tbody>
 			 </table>			
 		</script>
@@ -48,13 +48,15 @@
 	<form id="addTask" action="#" class="col-sm-7">
 		<div class="form-group">
 			<label for="title">Title</label> <input type="text"
-				class="form-control" id="taskTitle" placeholder="Task Title" value="<%= task.id ? task.taskTitle : '' %>">
+				class="form-control" id="taskTitle" placeholder="Task Title" <%=action?'':'readonly'%> value="<%= task.id ? task.taskTitle : '' %>">
 			<span class="error" style="color:red"><span>
 		</div>
 		<div class="form-group">
-			<label> <input type="checkbox" name="completed" id="completed" <%=task.completed ? completed='checked' : completed=''%>> Completed</label><br/>
-			<button type="submit" class="btn btn-default"><%=task.id? 'Update':'Create'%></button>
-			<a  class="btn btn-danger delete" style="<%=task.id ? '': 'display:none'%>">Delete</a>
+			<label> <input type="checkbox" <%=action?'':'disabled'%> name="completed" id="completed" <%=task.completed ? completed='checked' : completed=''%>> Completed</label><br/>
+			<%if(action){%>
+				<button type="submit" class="btn btn-default"><%=task.id? 'Update':'Create'%></button>
+				<a  class="btn btn-danger delete" style="<%=task.id ? '': 'display:none'%>">Delete</a>
+			<%}%>
 		</div>
 	</form>
 	</script>

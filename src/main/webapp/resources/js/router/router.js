@@ -4,7 +4,8 @@ var app= app||{};
 app.TaskRouter=Backbone.Router.extend({
 		routes:{
 			'':'list',
-			'add/:id':'add',
+			'add':'add',
+			'list/:id(/:action)':'taskEdit',
 		},
 		initialize:function(){
 			window.tasks= new app.Tasks();
@@ -25,23 +26,33 @@ app.TaskRouter=Backbone.Router.extend({
 			});
 
 		},
-		add:function(id){
-			console.log('this is a add function');
-			if(id!=='new'){
-				console.log(id);
-				var getTask=tasks.get(id);
-				if(!getTask){
-					$('.addFormDisplay').html('<div class="alert alert-danger" role="alert">No Task</div>');
-					return;
-				}
-				$('.addFormDisplay').html(_.template($('#addFormTemplate').html(),{task:getTask.toJSON()}));
+		add:function(){
+				console.log('this is a add function');
+				var _this=this;
+				this.newTask= new app.Task();
+				$('.addFormDisplay').html(_.template($('#addFormTemplate').html(),{task:this.newTask,action:'add'}));
+				$('#taskTitle').focus();
+				this.addNewTaskView= new app.AddOne({model:this.newTask});
+				tasks.fetch({
+					success:function(){
+						$('.tasks').html(_this.tasksView.render().el);
+					}
+				});
+		},
+		taskEdit:function(id,action){
+			console.log(id);
+			var getTask=tasks.get(id);
+			if(!getTask){
+				$('.addFormDisplay').html('<div class="alert alert-danger" role="alert">No Task</div>');
+				return;
+			}
+			if(action==='edit'){
+				$('.addFormDisplay').html(_.template($('#addFormTemplate').html(),{task:getTask.toJSON(),action:action}));
 				this.addNewTaskView= new app.AddOne({model:getTask});
 			}else{
-				$('.addFormDisplay').html(_.template($('#addFormTemplate').html(),{task:new app.Task}));
-				this.addNewTaskView= new app.AddOne({model:new app.Task});
-				tasks.fetch();
-				$('.tasks').html(this.tasksView.render().el);
+				$('.addFormDisplay').html(_.template($('#addFormTemplate').html(),{task:getTask.toJSON(),action:null}));
+				this.addNewTaskView= new app.AddOne({model:getTask});
 			}
-			
 		},
+		
 	});
